@@ -1,14 +1,13 @@
 const fs = require('fs');
 const path = require('path');
-// const template = fs.createReadStream(path.join(__dirname, 'template.html'));
 
 fs.mkdir(path.join(__dirname, 'project-dist'), { recursive: true }, () => {});
-// console.log(template);
 
 // ==========COPY ASSETS=========
 const copy = async (src, target) => {
   await fs.mkdir(target, {recursive: true}, () => {});
   fs.readdir(src, {withFileTypes: true}, (err, files) => {
+    if (err) throw err;
     files.forEach((file) => {
       let srcPath = path.join(src, file.name);
       let targetPath = path.join(target, file.name);
@@ -49,5 +48,39 @@ fs.readdir(path.join(__dirname, 'styles'),{ withFileTypes: true }, (err, files) 
       }
     });
   });
+  console.log('Styles Done!');
 });
 
+// =============HTML============
+fs.readFile(path.join(__dirname, 'template.html'), 'utf-8', (err, data) => { 
+  if (err) throw err;
+
+  let template = data;  
+  const reg = /{{(.*)}}/;
+  let tag = template.match(reg);
+  let tagName = tag[1];  
+
+  clearTag(); 
+
+  // ===============CLEAR TAGS=============
+  function clearTag() {
+    fs.readFile(path.join(__dirname, 'components', `${tagName}.html`), 'utf-8', (err, el) => {
+      if (err) throw err;
+      if (!el) {
+        template = template.replace(reg, '');
+      } else {
+        template = template.replace(reg, el);
+      }
+  
+      tag = template.match(reg);
+  
+      if (tag === null) {
+        fs.writeFile(path.join(__dirname, 'project-dist', 'index.html'), template, () => {});
+      } else {
+        tagName = tag[1];
+        clearTag();
+      }
+    });      
+  }
+  console.log('HTML Done!');
+});
