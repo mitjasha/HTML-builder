@@ -5,10 +5,12 @@ fs.readdir(path.join(__dirname, 'secret-folder'),{withFileTypes: true}, (err, fi
   if (err) throw err;
 
   files.forEach((file) => {
-    fs.stat(path.join(__dirname, 'secret-folder', file.name), (err, stats) => {
-      if (err) throw err;
-
-      process.stdout.write(`${file.name.split('.')[0]} - ${file.name.split('.')[1]} - ${(stats.size).toFixed(0)} bytes\n`);
-    });
+    if (file.isFile()) {
+      fs.stat(path.join(__dirname, 'secret-folder', file.name), (err, stats) => {
+        if (err) throw err;
+  
+        process.stdout.write(`${file.name.split('.')[0]} - ${file.name.split('.')[1]} - ${(stats.size).toFixed(0)} bytes\n`);
+      });
+    }
   });
 });
