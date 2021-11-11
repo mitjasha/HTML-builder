@@ -8,13 +8,19 @@ function callback(err) {
   console.log('source was copied to destination');
 }
 
-fs. mkdir(folderCopy, {recursive: true}, (err) => {
-  if (err) throw err;
-});
+async function copyFolder() {
+  await fs.promises.rm(folderCopy, { recursive: true, force: true });
 
-fs.readdir(folder, (err, data) => {
-  if (err) throw err;
-  data.forEach(file => {
-    fs.copyFile(path.join(__dirname, 'files', file), path.join(__dirname, 'files-copy', file), callback);
+  fs.mkdir(folderCopy, {recursive: true}, (err) => {
+    if (err) throw err;
   });
-});
+  
+  fs.readdir(folder, (err, data) => {
+    if (err) throw err;
+    data.forEach(file => {
+      fs.copyFile(path.join(__dirname, 'files', file), path.join(__dirname, 'files-copy', file), callback);
+    });
+  });
+}
+copyFolder();
+
