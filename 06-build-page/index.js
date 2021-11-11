@@ -56,7 +56,7 @@ fs.readFile(path.join(__dirname, 'template.html'), 'utf-8', (err, data) => {
   if (err) throw err;
 
   let template = data;  
-  const reg = /{{(.*)}}/;
+  const reg = /{{(\w+)}}/;
   let tag = template.match(reg);
   let tagName = tag[1];  
 
