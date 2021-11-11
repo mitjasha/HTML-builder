@@ -21,13 +21,13 @@ const exit = (data) => {
 rl.question('What do you think of Node.js? ', (answer) => {
   if (exit(answer)){
     // console.log(`Your answer: ${answer}`);
-    writeableStream.write(answer);
+    writeableStream.write(answer + '\n');
   }
 });
 
-rl.on('line', (input) => {
+rl.addListener('line', (input) => {
   if (exit(input)){
-    writeableStream.write(input);
+    writeableStream.write(input + '\n');
   }
 });
 
